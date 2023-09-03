@@ -3,9 +3,8 @@ from scipy.signal import stft, lfilter
 from scipy.fft import dct
 
 class MFCC:
-    def __init__(self, window_length, window_overlap, melbands, maxmel):
-        self.win_len = window_length
-        self.win_overlap = window_overlap
+    def __init__(self, melbands, maxmel, *window):
+        self.win = window[0]
         self.melbands = melbands
         self.maxmel = maxmel
 
@@ -24,8 +23,16 @@ class MFCC:
         Yf, f = self.spectrum(yf, fs, N, f_scale='Hz')
         return yf, Yf, f
 
-    def dft(self, y, fs, window_length, window_overlap):
-        f, _, Sxx = stft(x=y,fs=fs,window='hann',nperseg=window_length,noverlap=window_overlap)
+    def dft_segments(self, y, fs):
+        if type(self.win) != int:
+            win_length = self.win[0]*fs//1000
+            win_overlap = self.win[1]*fs//1000
+            f, _, Sxx = stft(x=y,fs=fs,window='hann',nperseg=win_length,noverlap=win_overlap)
+        else:
+            win_length = len(y)//self.win
+            Sxx = np.zeros(shape=(win_length//2,self.win))
+            for i in range(self.win):
+                Sxx[:,i], f = self.spectrum(y[i*win_length:(i+1)*win_length], fs, win_length)
         return Sxx, f
 
     def freq2mel(self,f): 
@@ -63,8 +70,8 @@ class MFCC:
     
     def mfcc(self, y, fs):
         yf, _, _ = self.pre_emphasis(y,fs)
-        Sx, _ = self.dft(yf, fs, self.win_len, self.win_overlap)
-        melfilterbank, _ = self.melbank(self.melbands, self.maxmel)
+        Sx, f = self.dft_segments(yf, fs)
+        melfilterbank, _ = self.melbank(self.melbands, self.maxmel, f, Sx.shape[0])
         logmel = self.logmelspectrogram(melfilterbank, Sx)
         mfcc = dct(logmel)
         return mfcc
