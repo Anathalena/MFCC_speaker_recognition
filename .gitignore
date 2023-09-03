@@ -130,6 +130,12 @@ dmypy.json
 
 #------------------------#
 /resources
-/Data
+Data/.ipynb_checkpoints
+
+Data
+Data/old_samples
+
+Data/words
+Data/*.wav
 notes.md
-model.ipynb
+mlruns
