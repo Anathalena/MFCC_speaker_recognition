@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.signal import stft, lfilter
 from scipy.fft import dct
+from numpy import hanning
 
 class MFCC:
     def __init__(self, melbands, maxmel, *window):
@@ -32,7 +33,9 @@ class MFCC:
             win_length = len(y)//self.win
             Sxx = np.zeros(shape=(win_length//2,self.win))
             for i in range(self.win):
-                Sxx[:,i], f = self.spectrum(y[i*win_length:(i+1)*win_length], fs, win_length)
+                frame = y[i*win_length:(i+1)*win_length]
+                window = np.hanning(win_length)*frame
+                Sxx[:,i], f = self.spectrum(window, fs, win_length)
         return Sxx, f
 
     def freq2mel(self,f): 
