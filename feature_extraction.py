@@ -77,4 +77,5 @@ class MFCC:
         melfilterbank, _ = self.melbank(self.melbands, self.maxmel, f, Sx.shape[0])
         logmel = self.logmelspectrogram(melfilterbank, Sx)
         mfcc = dct(logmel)
+        mfcc = mfcc[:,1:]
         return mfcc
