@@ -1,6 +1,6 @@
 import numpy as np
 from statistics import mode
-from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.metrics import precision_score, recall_score, f1_score
 
 class kNN():
     def __init__(self, k=10, distance='euclidean'):
@@ -34,7 +34,7 @@ class kNN():
             neighbours = self.get_neighbours(x)
             predictions.append(mode(neighbours))
         
-        acc = accuracy_score(y_test, predictions)
-        prec = precision_score(y_test, predictions, average='macro', zero_division=0)
-        rec = recall_score(y_test, predictions, average='macro', zero_division=0)
-        return predictions, acc, prec, rec
+        prec = precision_score(y_test, predictions, average='weighted', zero_division=0)
+        rec = recall_score(y_test, predictions, average='weighted', zero_division=0)
+        f1 = f1_score(y_test, predictions, average='weighted', zero_division=0.0)
+        return predictions, f1, prec, rec
