@@ -9,8 +9,8 @@ from itertools import product
 
 # Load data
 working_dir = os.getcwd()
-data_path_test = os.path.join(working_dir, 'Data', 'old_samples','test')
-data_path_train = os.path.join(working_dir, 'Data','old_samples', 'train')
+data_path_test = os.path.join(working_dir, 'Data', 'version 2','test')
+data_path_train = os.path.join(working_dir,'Data', 'version 2', 'train')
 
 
 melbands = 15 #number of MFCC
@@ -19,7 +19,7 @@ parts_lst = [1,2,3,(30,20)] #how to split a signal, provide either number of par
 distance_lst = ['euclidean','manhattan'] #distance metric for kNN
 k_lst = np.unique(np.logspace(start=1, stop=6, base=2, num=10, dtype=np.int64)) #number of neighbours for kNN
 
-experiment = mlflow.set_experiment(experiment_name='Hypertuning for old samples (Sample 1)')
+experiment = mlflow.set_experiment(experiment_name='Hypertuning v2')
 
 def run():
     i = 1
